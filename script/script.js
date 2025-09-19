@@ -8,7 +8,9 @@ window.onload = function() {
 
 let reset = document.getElementById('resetPartie');
 
-reset.addEventListener('click', resetGame);
+reset.addEventListener('click', () => {
+    resetGame();
+})
 
 function resetGame() {
     
