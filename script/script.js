@@ -1,4 +1,7 @@
-let reset = document.getElementById('reset');
+let demarrerReset = document.getElementById('demarrerReset');
+let partieLance = false;
+let score = document.getElementById('score');
+let tailleRaquette = 100;
 
 window.onload = function() {
     const canvas = document.getElementById("pong");
@@ -7,22 +10,41 @@ window.onload = function() {
     ctx.strokeStyle = "darkblue";
     ctx.lineWidth = 5;
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
-    start = document.createElement("button");
-    start.id = "start";
-    start.textContent = "Start";
-    start.style.position = 'absolute';
-    start.style.top = canvas.height / 2 + 50 + 'px';
-    start.style.left = canvas.width / 2 - 40 + 'px';
-    document.body.appendChild(start);
+
+    ctx.fillRect(canvas.width/2 - (tailleRaquette/2), canvas.height-(tailleRaquette/4), 
+        tailleRaquette, tailleRaquette/10);
 }
 
 
-reset.addEventListener('click', () => {
-    resetGame();
+demarrerReset.addEventListener('click', () => {
+    if(partieLance === true){
+        resetGame();
+    } else {
+        partieLance = true;
+        startingGame();
+        startTimer();
+    }
 });
 
 function startingGame() {
+    apparitionBalle();
     compteARebours();
+}
+
+function startTimer(){
+    let cpt = 0;
+    let timer = setInterval(() => {
+        cpt++;
+        score.innerText = `Score : ${cpt}`;
+    }, 1000);
+}
+
+function stopTimer(){
+    clearInterval(timer);
+}
+
+function apparitionBalle(){
+
 }
 
 function compteARebours() {
