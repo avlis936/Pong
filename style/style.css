@@ -1,21 +1,43 @@
-h1{
+h1 {
     text-align: center;
     font-family: Arial, sans-serif;
     color: #333;
+    margin: 0; 
 }
 
-canvas{
+canvas {
     background-color: #f0f0f0;
     display: block;
-    margin: 0 auto;
+    margin: 0 auto; 
 }
 
-button{
-    display: inline-block;
-    margin: auto;
-    padding: auto;
+button {
+    display: block; 
+    margin:  auto; 
+    padding: 10px 20px;
     font-size: 20px;
     cursor: pointer;
     background-color: #5b6ecc;
     color: white;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #4a5bb8;
+}
+
+.arrow {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    font-size: 30px;
+    width: 80px; 
+    height: 80px; 
+    line-height: 80px;  
+    border-radius: 50%;
+    margin: 0 auto; 
+}
+
+.p{
+    margin: 0;
 }

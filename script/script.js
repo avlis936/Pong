@@ -2,6 +2,7 @@ let demarrerReset = document.getElementById('demarrerReset');
 let partieLance = false;
 let score = document.getElementById('score');
 let tailleRaquette = 100;
+let positionRaquette = 200;
 
 window.onload = function() {
     const canvas = document.getElementById("pong");
@@ -10,7 +11,6 @@ window.onload = function() {
     ctx.strokeStyle = "darkblue";
     ctx.lineWidth = 5;
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
     ctx.fillRect(canvas.width/2 - (tailleRaquette/2), canvas.height-(tailleRaquette/4), 
         tailleRaquette, tailleRaquette/10);
 }
