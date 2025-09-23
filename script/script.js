@@ -8,6 +8,8 @@ const ctx = canvas.getContext("2d");
 let partieLance = false;
 let tailleBalle = 5;
 let tailleRaquette = 80;
+let vitesseBalleX = 0;
+let vitesseBalleY = 0;
 let positionBalleX = canvas.width/2;
 let positionBalleY = canvas.height-(tailleRaquette/2);
 let positionRaquetteX = 0;
@@ -30,6 +32,7 @@ function startingGame() {
 }
 
 function gameLoop() {
+    moveBall();
     draw();
     requestAnimationFrame(gameLoop);
 }
@@ -100,6 +103,14 @@ document.addEventListener('keydown', (event) => {
             if(positionRaquetteX + tailleRaquette/2 < canvas.width/2){
                 positionRaquetteX += 10;
             }
+        } else if(keyName === "q"){
+            if(positionRaquetteX > -(canvas.width/2 - tailleRaquette/2)){
+                positionRaquetteX -= 10;
+            }
+        } else if(keyName === "d"){
+            if(positionRaquetteX + tailleRaquette/2 < canvas.width/2){
+                positionRaquetteX += 10;
+            }
         }
     }
 });
@@ -142,7 +153,8 @@ function draw() {
 
 // Fonction pour la balle
 function moveBall() {
-    
+    positionBalleX += vitesseBalleX;
+    positionBalleY -= vitesseBalleY;
 }
 
 function resetGame() {
