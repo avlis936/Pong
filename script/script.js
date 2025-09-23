@@ -1,6 +1,8 @@
 let demarrerReset = document.getElementById('demarrerReset');
 let fleches = document.querySelectorAll('.fleches');
 let score = document.getElementById('score');
+const canvas = document.getElementById("pong");
+const ctx = canvas.getContext("2d");
 
 
 let partieLance = false;
@@ -8,64 +10,37 @@ let tailleRaquette = 80;
 let positionRaquetteX = 0;
 let duration = 3; 
 
-window.onload = function() {
-    const canvas = document.getElementById("pong");
-    var ctx = canvas.getContext("2d");
-    
-    ctx.strokeStyle = "darkblue";
-    ctx.lineWidth = 5;
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
-    ctx.fillRect(canvas.width/2 - (tailleRaquette/2) + positionRaquetteX, canvas.height-(tailleRaquette/4), 
-        tailleRaquette, tailleRaquette/10);
-
-    
-}
-
 demarrerReset.addEventListener('click', () => {
     if(partieLance === true){
         resetGame();
-        demarrerReset.innerText = "Démarrer la partie";
     } else {
-        partieLance = true;
         startingGame();
         startTimer();
         demarrerReset.innerText = "Réinitialiser la partie";
     }
 }); 
 
-fleches.forEach(fleche => {
-    fleche.addEventListener('click', () => {
-        if(partieLance === true){
-            const choixDirection = fleche.id;
-            console.log(choixDirection);
-            if(choixDirection === "gauche"){
-                positionRaquetteX -= 10;
-            } else if(choixDirection === "droite"){
-                positionRaquetteX += 10;
-            }
-        }
-    });
-});
-
 function startingGame() {
-    apparitionBalle();
     compteARebours();
+    gameLoop();
+}
+
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
 }
 
 function startTimer(){
     let cpt = 0;
     let timer = setInterval(() => {
         cpt++;
-        score.innerText = `Score : ${cpt}`;
+        score.innerText = `${cpt}`;
     }, 1000);
 }
 
 function stopTimer(){
     clearInterval(timer);
-}
-
-function apparitionBalle(){
-
 }
 
 function compteARebours() {
@@ -83,8 +58,25 @@ function compteARebours() {
         } else {
             drawNumber(current);
         }
-    }, 1000);    
+    }, 1000);
+    partieLance = true;
 }
+
+fleches.forEach(fleche => {
+    fleche.addEventListener('click', () => {
+        if(partieLance === true){
+            const choixDirection = fleche.id;
+            console.log(choixDirection);
+            if(choixDirection === "gauche"){
+                positionRaquetteX -= 10;
+            } else if(choixDirection === "droite"){
+                positionRaquetteX += 10;
+            }
+        }
+    });
+});
+
+
 
 function drawText(text) {
     ctx.fillStyle = "darkblue";
@@ -106,9 +98,17 @@ function update() {
 
 }
 
-function draw() {
+function clearCanvas(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    update();
+}
+
+function draw() {
+    clearCanvas();
+    ctx.strokeStyle = "darkblue";
+    ctx.lineWidth = 5;
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(canvas.width/2 - (tailleRaquette/2) + positionRaquetteX, canvas.height-(tailleRaquette/4), 
+        tailleRaquette, tailleRaquette/10);
 }
 
 function resetGame() {
