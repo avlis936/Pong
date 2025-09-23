@@ -6,7 +6,10 @@ const ctx = canvas.getContext("2d");
 
 
 let partieLance = false;
+let tailleBalle = 5;
 let tailleRaquette = 80;
+let positionBalleX = canvas.width/2;
+let positionBalleY = canvas.height-(tailleRaquette/2);
 let positionRaquetteX = 0;
 let duration = 3; 
 
@@ -14,30 +17,32 @@ demarrerReset.addEventListener('click', () => {
     if(partieLance === true){
         resetGame();
     } else {
+        //compteARebours();
         startingGame();
-        startTimer();
+        partieLance = true;
         demarrerReset.innerText = "Réinitialiser la partie";
     }
 }); 
 
 function startingGame() {
-    compteARebours();
     gameLoop();
+    startTimer();
 }
 
 function gameLoop() {
-    update();
     draw();
     requestAnimationFrame(gameLoop);
 }
+
 
 function startTimer(){
     let cpt = 0;
     let timer = setInterval(() => {
         cpt++;
-        score.innerText = `${cpt}`;
+        score.innerText = `${Math.trunc(cpt/60)} min ${cpt%60}`;
     }, 1000);
 }
+
 
 function stopTimer(){
     clearInterval(timer);
@@ -49,7 +54,8 @@ function compteARebours() {
 
     const id = setInterval(() => {
         current--;
-        if (current <= 0) {
+        clearCanvas();
+        if (current === 0 || current < -1) {
             clearInterval(id);
             drawText("GO");
             setTimeout(() => {
@@ -58,25 +64,45 @@ function compteARebours() {
         } else {
             drawNumber(current);
         }
-    }, 1000);
-    partieLance = true;
+        if(current === -1){
+            partieLance = true;
+            clearCanvas();
+            startingGame();
+        }
+    }, 1000);    
 }
 
 fleches.forEach(fleche => {
     fleche.addEventListener('click', () => {
         if(partieLance === true){
             const choixDirection = fleche.id;
-            console.log(choixDirection);
             if(choixDirection === "gauche"){
-                positionRaquetteX -= 10;
+                if(positionRaquetteX > -(canvas.width/2 - tailleRaquette/2)){
+                    positionRaquetteX -= 10;
+                }
             } else if(choixDirection === "droite"){
-                positionRaquetteX += 10;
+                if(positionRaquetteX + tailleRaquette/2 < canvas.width/2){
+                    positionRaquetteX += 10;
+                }
             }
         }
     });
 });
 
-
+document.addEventListener('keydown', (event) => {
+    if(partieLance === true){
+        const keyName = event.key;
+        if(keyName === "ArrowLeft"){
+            if(positionRaquetteX > -(canvas.width/2 - tailleRaquette/2)){
+                positionRaquetteX -= 10;
+            }
+        } else if(keyName === "ArrowRight"){
+            if(positionRaquetteX + tailleRaquette/2 < canvas.width/2){
+                positionRaquetteX += 10;
+            }
+        }
+    }
+});
 
 function drawText(text) {
     ctx.fillStyle = "darkblue";
@@ -94,10 +120,6 @@ function drawNumber(number) {
     ctx.fillText(number, canvas.width / 2, canvas.height / 2 - 50);
 }
 
-function update() {
-
-}
-
 function clearCanvas(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
@@ -106,9 +128,21 @@ function draw() {
     clearCanvas();
     ctx.strokeStyle = "darkblue";
     ctx.lineWidth = 5;
+    //contour du canvas
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    //raquette
     ctx.fillRect(canvas.width/2 - (tailleRaquette/2) + positionRaquetteX, canvas.height-(tailleRaquette/4), 
         tailleRaquette, tailleRaquette/10);
+    //balle
+    ctx.beginPath();
+    ctx.fillStyle = "black";
+    ctx.arc(positionBalleX, positionBalleY, tailleBalle, 0, Math.PI * 2);
+    ctx.stroke();
+}
+
+// Fonction pour la balle
+function moveBall() {
+    
 }
 
 function resetGame() {
