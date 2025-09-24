@@ -16,14 +16,18 @@ let positionRaquetteX = 0;
 let duration = 3; 
 let timer;
 let directionRaquette = 0; // -1 gauche, 1 droite, 0 immobile
+let gameOver = false;
 
 demarrerReset.addEventListener('click', () => {
     if(partieLance === true){
         resetGame();
-    } else {
+    } else if(gameOver === false){
+        clearCanvas();
         compteARebours();
         demarrerReset.disabled = true;
         demarrerReset.innerText = "Réinitialiser la partie";
+    } else{
+        resetGame();
     }
 }); 
 
@@ -212,7 +216,9 @@ function bounceBall(){
        positionBalleX < canvas.width/2 + (tailleRaquette/2) + positionRaquetteX){
         vitesseBalleY = -vitesseBalleY;
     }
+    //perte de la partie
     if(positionBalleY + tailleBalle/2 > canvas.height){
+        gameOver = true;
         stopTimer();
         partieLance = false;
         drawText("GAME OVER", 60);
