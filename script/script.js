@@ -29,10 +29,13 @@ demarrerReset.addEventListener('click', () => {
 function startingGame() {
     gameLoop();
     startTimer();
+    vitesseBalleX = 3;
+    vitesseBalleY = -5;
 }
 
 function gameLoop() {
     moveBall();
+    bounceBall();
     draw();
     requestAnimationFrame(gameLoop);
 }
@@ -154,7 +157,26 @@ function draw() {
 // Fonction pour la balle
 function moveBall() {
     positionBalleX += vitesseBalleX;
-    positionBalleY -= vitesseBalleY;
+    positionBalleY += vitesseBalleY;
+}
+
+function bounceBall(){
+    //rebond sur les rebords du canvas
+    if(positionBalleX + tailleBalle/2 > canvas.width || positionBalleX - tailleBalle/2 < 0){
+        console.log("rebond : ", positionBalleX, " ; ", positionBalleY);
+        vitesseBalleX = -vitesseBalleX;
+    }
+    if(positionBalleY - tailleBalle/2 < 0){
+        console.log("rebond : ", positionBalleX, " ; ", positionBalleY);
+        vitesseBalleY = -vitesseBalleY;
+    }
+    //rebond sur la raquette
+    if(positionBalleY + tailleBalle/2 > canvas.height - (tailleRaquette/4) &&
+       positionBalleX > canvas.width/2 - (tailleRaquette/2) + positionRaquetteX &&
+       positionBalleX < canvas.width/2 + (tailleRaquette/2) + positionRaquetteX){
+        console.log("rebond raquette : ", positionBalleX, " ; ", positionBalleY);
+        vitesseBalleY = -vitesseBalleY;
+    }
 }
 
 function resetGame() {
