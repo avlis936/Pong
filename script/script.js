@@ -14,28 +14,31 @@ let positionBalleX = canvas.width/2;
 let positionBalleY = canvas.height-(tailleRaquette/2);
 let positionRaquetteX = 0;
 let duration = 3; 
+let timer;
 
 demarrerReset.addEventListener('click', () => {
     if(partieLance === true){
         resetGame();
     } else {
-        //compteARebours();
-        startingGame();
-        partieLance = true;
+        compteARebours();
         demarrerReset.innerText = "Réinitialiser la partie";
     }
 }); 
 
 function startingGame() {
-    gameLoop();
+    if(gameLoop() === 1){
+        return;
+    }
     startTimer();
-    vitesseBalleX = 3;
-    vitesseBalleY = -5;
+    vitesseBalleX = Math.floor(Math.random() * 3) + 1;
+    vitesseBalleY = -Math.abs(Math.floor(Math.random() * 3) + 1);
 }
 
 function gameLoop() {
     moveBall();
-    bounceBall();
+    if(bounceBall() === 1){
+        return 1;
+    }
     draw();
     requestAnimationFrame(gameLoop);
 }
@@ -43,7 +46,7 @@ function gameLoop() {
 
 function startTimer(){
     let cpt = 0;
-    let timer = setInterval(() => {
+    timer = setInterval(() => {
         cpt++;
         score.innerText = `${Math.trunc(cpt/60)} min ${cpt%60}`;
     }, 1000);
@@ -56,21 +59,17 @@ function stopTimer(){
 
 function compteARebours() {
     let current = duration;
-    drawNumber(current);
+    drawNumber(current, 100);
 
     const id = setInterval(() => {
         current--;
         clearCanvas();
-        if (current === 0 || current < -1) {
+        if (current <= -1) {
             clearInterval(id);
-            drawText("GO");
-            setTimeout(() => {
-                if (typeof onEnd === "function") onEnd();
-            }, duration * 1000);
         } else {
-            drawNumber(current);
+            drawNumber(current, 100);
         }
-        if(current === -1){
+        if(current === 0){
             partieLance = true;
             clearCanvas();
             startingGame();
@@ -93,6 +92,23 @@ fleches.forEach(fleche => {
             }
         }
     });
+});
+
+fleches.forEach(fleche => {
+    fleche.addEventListener('touchstart', () => {
+        if(partieLance === true){
+            const choixDirection = fleche.id;
+            if(choixDirection === "gauche"){
+                if(positionRaquetteX > -(canvas.width/2 - tailleRaquette/2)){
+                    positionRaquetteX -= 10;
+                }
+            } else if(choixDirection === "droite"){
+                if(positionRaquetteX + tailleRaquette/2 < canvas.width/2){
+                    positionRaquetteX += 10;
+                }
+            }
+        }
+    }); 
 });
 
 document.addEventListener('keydown', (event) => {
@@ -118,17 +134,17 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-function drawText(text) {
+function drawText(text, taille) {
     ctx.fillStyle = "darkblue";
-    ctx.font = "100px Arial";
+    ctx.font = taille + "px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
     ctx.fillText(text, canvas.width / 2, canvas.height / 2 - 50);
 }
 
-function drawNumber(number) {
+function drawNumber(number, taille) {
     ctx.fillStyle = "darkblue";
-    ctx.font = "100px Arial";
+    ctx.font = taille + "px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
     ctx.fillText(number, canvas.width / 2, canvas.height / 2 - 50);
@@ -163,19 +179,40 @@ function moveBall() {
 function bounceBall(){
     //rebond sur les rebords du canvas
     if(positionBalleX + tailleBalle/2 > canvas.width || positionBalleX - tailleBalle/2 < 0){
-        console.log("rebond : ", positionBalleX, " ; ", positionBalleY);
         vitesseBalleX = -vitesseBalleX;
+        improveSpeed();
     }
     if(positionBalleY - tailleBalle/2 < 0){
-        console.log("rebond : ", positionBalleX, " ; ", positionBalleY);
         vitesseBalleY = -vitesseBalleY;
+        improveSpeed();
     }
     //rebond sur la raquette
     if(positionBalleY + tailleBalle/2 > canvas.height - (tailleRaquette/4) &&
        positionBalleX > canvas.width/2 - (tailleRaquette/2) + positionRaquetteX &&
        positionBalleX < canvas.width/2 + (tailleRaquette/2) + positionRaquetteX){
-        console.log("rebond raquette : ", positionBalleX, " ; ", positionBalleY);
         vitesseBalleY = -vitesseBalleY;
+    }
+    if(positionBalleY + tailleBalle/2 > canvas.height){
+        stopTimer();
+        partieLance = false;
+        drawText("GAME OVER", 60);
+        demarrerReset.innerText = "Démarrer une nouvelle partie";
+        vitesseBalleX = 0;
+        vitesseBalleY = 0;
+        return 1;
+    }
+}
+
+function improveSpeed(){
+    if(vitesseBalleX > 0){
+        vitesseBalleX += 0.3;
+    } else {
+        vitesseBalleX -= 0.3;
+    }
+    if(vitesseBalleY > 0){
+        vitesseBalleY += 0.3;
+    } else {
+        vitesseBalleY -= 0.3;
     }
 }
 
