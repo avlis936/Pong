@@ -230,15 +230,19 @@ function bounceBall(){
 }
 
 function improveSpeed(){
-    if(vitesseBalleX > 0){
-        vitesseBalleX += 0.3;
-    } else {
-        vitesseBalleX -= 0.3;
+    if(Math.abs(vitesseBalleX) < 10){
+        if(vitesseBalleX > 0){
+            vitesseBalleX += 0.3;
+        } else {
+            vitesseBalleX -= 0.3;
+        }
     }
-    if(vitesseBalleY > 0){
-        vitesseBalleY += 0.3;
-    } else {
-        vitesseBalleY -= 0.3;
+    if(Math.abs(vitesseBalleY) < 10){
+        if(vitesseBalleY > 0){
+            vitesseBalleY += 0.3;
+        } else {
+            vitesseBalleY -= 0.3;
+        }
     }
 }
 
