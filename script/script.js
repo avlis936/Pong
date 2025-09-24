@@ -15,6 +15,7 @@ let positionBalleY = canvas.height-(tailleRaquette/2);
 let positionRaquetteX = 0;
 let duration = 3; 
 let timer;
+let directionRaquette = 0; // -1 gauche, 1 droite, 0 immobile
 
 demarrerReset.addEventListener('click', () => {
     if(partieLance === true){
@@ -36,6 +37,7 @@ function startingGame() {
 
 function gameLoop() {
     moveBall();
+    deplacementRaquette();
     if(bounceBall() === 1){
         return 1;
     }
@@ -94,19 +96,35 @@ fleches.forEach(fleche => {
     });
 });
 
+function deplacementRaquette(){
+    if(directionRaquette === -1){
+        if(positionRaquetteX > -(canvas.width/2 - tailleRaquette/2)){
+            positionRaquetteX -= 10;
+        }
+    } else if(directionRaquette === 1){
+        if(positionRaquetteX + tailleRaquette/2 < canvas.width/2){
+            positionRaquetteX += 10;
+        }
+    }
+}
+
 fleches.forEach(fleche => {
     fleche.addEventListener('touchstart', () => {
         if(partieLance === true){
             const choixDirection = fleche.id;
             if(choixDirection === "gauche"){
-                if(positionRaquetteX > -(canvas.width/2 - tailleRaquette/2)){
-                    positionRaquetteX -= 10;
-                }
+                directionRaquette = -1;
             } else if(choixDirection === "droite"){
-                if(positionRaquetteX + tailleRaquette/2 < canvas.width/2){
-                    positionRaquetteX += 10;
-                }
+                directionRaquette = 1;
             }
+        }
+    }); 
+});
+
+fleches.forEach(fleche => {
+    fleche.addEventListener('touchend', () => {
+        if(partieLance === true){
+            directionRaquette = 0;
         }
     }); 
 });
