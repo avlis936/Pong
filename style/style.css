@@ -37,6 +37,7 @@ button:hover {
     line-height: 80px;  
     border-radius: 50%;
     margin: 0 auto; 
+    gap: 25px;
 }
 
 p{

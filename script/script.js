@@ -22,6 +22,7 @@ demarrerReset.addEventListener('click', () => {
         resetGame();
     } else {
         compteARebours();
+        demarrerReset.disabled = true;
         demarrerReset.innerText = "Réinitialiser la partie";
     }
 }); 
@@ -74,6 +75,7 @@ function compteARebours() {
         if(current === 0){
             partieLance = true;
             clearCanvas();
+            demarrerReset.disabled = false;
             startingGame();
         }
     }, 1000);    
