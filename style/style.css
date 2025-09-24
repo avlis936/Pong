@@ -18,13 +18,13 @@ button {
     padding: 10px 20px;
     font-size: 20px;
     cursor: pointer;
-    background-color: #5b6ecc;
+    background-color: #003d82;
     color: white;
     border-radius: 5px;
 }
 
 button:hover {
-    background-color: #4a5bb8;
+    background-color: #000000;
 }
 
 .arrow {
